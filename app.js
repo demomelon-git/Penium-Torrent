@@ -1,0 +1,18 @@
+(() => {
+const $=id=>document.getElementById(id);let client=null,torrent=null,zipBusy=false;
+const bytes=n=>{if(!n)return'0 B';const u=['B','KB','MB','GB','TB'];let i=0;while(n>=1024&&i<u.length-1){n/=1024;i++}return n.toFixed(i?1:0)+' '+u[i]};
+const msg=t=>$('message').textContent=t;
+function add(source){if(typeof WebTorrent==='undefined'){msg('WebTorrent не загрузился. Проверь интернет и обнови страницу.');return}if(torrent){msg('Уже добавлена раздача. Обнови страницу, чтобы выбрать другую.');return}
+client=client||new WebTorrent();$('statusPanel').hidden=false;$('state').textContent='Подключение';$('torrentName').textContent='Поиск пиров…';msg('Подключаемся к раздаче. Нужны WebRTC-пиры.');
+try{torrent=client.add(source,t=>{ $('torrentName').textContent=t.name||'Без названия';$('state').textContent='Загружается';render(t);t.on('download',stats);t.on('done',()=>{stats();$('state').textContent='Готово';$('zipButton').disabled=false;msg('Загрузка завершена. Можно собрать ZIP-архив.')});t.on('warning',e=>msg('Предупреждение: '+e.message));t.on('error',e=>{ $('state').textContent='Ошибка';msg('Ошибка: '+e.message)});stats()});torrent.on('error',e=>{ $('state').textContent='Ошибка';msg('Не удалось открыть торрент: '+e.message)})}catch(e){torrent=null;msg('Ошибка добавления: '+e.message)}}
+function render(t){const box=$('fileList');box.replaceChildren();t.files.forEach(f=>{const row=document.createElement('div');row.className='file';const n=document.createElement('span'),s=document.createElement('span');n.textContent=f.path;s.textContent=bytes(f.length);row.append(n,s);box.append(row)})}
+function stats(){if(!torrent)return;const p=Math.max(0,Math.min(100,(torrent.progress||0)*100));$('progressBar').style.width=p+'%';$('percent').textContent=p.toFixed(1)+'%';$('progressText').textContent=torrent.done?'Все файлы получены':'Загрузка данных';$('downloaded').textContent=bytes(torrent.downloaded);$('speed').textContent=bytes(torrent.downloadSpeed)+'/s';$('peers').textContent=torrent.numPeers||0}
+async function makeZip(){if(!torrent?.done||zipBusy)return;if(typeof JSZip==='undefined'){msg('JSZip не загрузился. Обнови страницу.');return}zipBusy=true;$('zipButton').disabled=true;msg('Упаковываем файлы. Не закрывай вкладку.');try{const zip=new JSZip();for(const f of torrent.files){const blob=await new Promise((ok,no)=>f.getBlob((e,b)=>e?no(e):ok(b)));zip.file(f.path,blob)}const blob=await zip.generateAsync({type:'blob',compression:'STORE'},m=>$('zipButton').textContent='Создание ZIP: '+Math.round(m.percent)+'%');const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(torrent.name||'penium-download').replace(/[\\/:*?"<>|]/g,'_')+'.zip';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);msg('ZIP создан и отправлен на скачивание.')}catch(e){msg('Не удалось создать ZIP: '+e.message)}finally{zipBusy=false;$('zipButton').disabled=!torrent?.done;$('zipButton').textContent='Скачать ZIP-архив'}}
+$('addMagnet').onclick=()=>{const v=$('magnet').value.trim();if(!v.startsWith('magnet:?')){msg('Введи корректную magnet-ссылку.');return}add(v)};
+$('magnet').addEventListener('keydown',e=>{if(e.key==='Enter')$('addMagnet').click()});
+$('torrentFile').onchange=e=>{const f=e.target.files?.[0];if(f)add(f)};
+$('zipButton').onclick=makeZip;const dz=$('dropzone');
+['dragenter','dragover'].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.add('drag')}));
+['dragleave','drop'].forEach(n=>dz.addEventListener(n,e=>{e.preventDefault();dz.classList.remove('drag')}));
+dz.addEventListener('drop',e=>{const f=e.dataTransfer.files?.[0];if(f&&f.name.toLowerCase().endsWith('.torrent'))add(f);else msg('Перетащи файл .torrent')});
+})();
