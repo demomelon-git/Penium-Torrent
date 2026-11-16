@@ -2,15 +2,15 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101827">
-<title>Penium Torrent Web</title><link rel="stylesheet" href="style.css">
+<title>Pentium Torrent Web Web</title><link rel="stylesheet" href="style.css">
 <script defer src="https://cdn.jsdelivr.net/npm/webtorrent@2.5.19/webtorrent.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script defer src="app.js"></script>
 </head>
 <body>
-<header><a class="brand" href="./"><span class="logo">P</span><span>Penium <b>Torrent</b><small>WEB CLIENT</small></span></a><span class="online">● Браузерный клиент</span></header>
+<header><a class="brand" href="./"><span class="logo">P</span><span>Pentium <b>Torrent Web</b><small>WEB CLIENT</small></span></a><span class="online">● Браузерный клиент</span></header>
 <main>
 <section class="hero"><small>PEER-TO-PEER · WEBTORRENT</small><h1>Торренты —<br><em>прямо в браузере.</em></h1><p>Добавь magnet-ссылку или файл .torrent. После загрузки собери содержимое в обычный ZIP-архив.</p></section>
 <section class="panel"><label for="magnet">MAGNET-ССЫЛКА</label><div class="inputrow"><input id="magnet" placeholder="magnet:?xt=urn:btih:..." autocomplete="off"><button id="addMagnet">Добавить</button></div><div class="or">ИЛИ</div><label class="drop" id="dropzone" for="torrentFile"><b class="up">↑</b><strong>Выбрать файл .torrent</strong><small>Нажми или перетащи файл сюда</small><input id="torrentFile" type="file" accept=".torrent,application/x-bittorrent"></label><p class="hint">Нужны WebRTC-совместимые трекеры и доступные пиры. Не все обычные торренты поддерживают браузерную загрузку.</p></section>
 <section id="statusPanel" class="panel" hidden><div class="statushead"><div><label>ТЕКУЩАЯ РАЗДАЧА</label><h2 id="torrentName">Подключение…</h2></div><span id="state" class="state">Подключение</span></div><div class="meta"><span id="progressText">Ожидание данных</span><b id="percent">0%</b></div><div class="bar"><div id="progressBar"></div></div><div class="stats"><div><small>Загружено</small><b id="downloaded">0 B</b></div><div><small>Скорость</small><b id="speed">0 B/s</b></div><div><small>Пиры</small><b id="peers">0</b></div></div><div id="fileList" class="files"></div><button id="zipButton" class="zip" disabled>Скачать ZIP-архив</button><p id="message" class="message" role="status">Добавь раздачу, чтобы начать.</p></section>
-<footer><span>Penium Torrent Web</span><span>Скачивай и распространяй только разрешённые материалы.</span></footer>
+<footer><span>Pentium Torrent Web Web</span><span>Скачивай и распространяй только разрешённые материалы.</span></footer>
 </main></body></html>
