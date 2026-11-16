@@ -1,4 +1,4 @@
-# Penium Torrent Web
+# Pentium Torrent Web
 
 Браузерный WebTorrent-клиент: добавление magnet-ссылки или файла .torrent, просмотр прогресса и упаковка полученных файлов в ZIP.
 
